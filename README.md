@@ -1,4 +1,5 @@
-# apimanagement
+# API Management Samples
+
 Samples for API Management for IBM Connnections Cloud.
 
 1. Clone the project from Git and build using Maven.
