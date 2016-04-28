@@ -1,3 +1,18 @@
+ /*
+*  �     Copyright  IBM  Corp. 2016
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at:
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+* implied. See the License for the specific language governing
+* permissions and limitations under the License.
+*/
 package com.ibm.cnxdevs.cloud.apimanagement.sample;
 
 /*
@@ -8,6 +23,7 @@ package com.ibm.cnxdevs.cloud.apimanagement.sample;
  *  To read more : https://en.wikipedia.org/wiki/Exponential_backoff
  * 
  */
+
 import java.net.URI;
 
 import org.apache.commons.codec.binary.Base64;
@@ -52,33 +68,33 @@ public class APIThrottlingSample {
 
 				prepareHttpClient(username, password);
 				HttpGet getMethod = new HttpGet();
-			getMethod.setHeader("Authorization",
-					"Basic " + createAuthHeader(username, password));
-			getMethod.setURI(new URI(serverUrl.concat(requestUrl)));
+			    getMethod.setHeader("Authorization",
+					              "Basic " + createAuthHeader(username, password));
+			    getMethod.setURI(new URI(serverUrl.concat(requestUrl)));
 			do {
 				  if (retry == true) {
 					  //Back off period increase exponentially with each retry attempt.
 					  long waitTime=getWaitTime(retryCount);
-					 System.out.println("Waiting for "+ waitTime+ "ms before Retry");
-					 Thread.sleep(waitTime); 
+					  System.out.println("Waiting for "+ waitTime+ "ms before Retry");
+					  Thread.sleep(waitTime); 
 				   }
 				 HttpResponse response = httpClient.execute(getMethod);
 				 getMethod.releaseConnection();
 				 System.out.println("Server response was "+ response.getStatusLine().getStatusCode());
 				 if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 					retry = false;
-				 }
-				 else if (response.getStatusLine().getStatusCode() == THROTTLING_STATUS_CODE) {
-					 if (retryCount <= MAX_RETRY) {
-						retry = true;
-					 } else {
-						// Since maximum throttling window is 60 secs, program waits for 60 secs before making future calls.
-						Thread.sleep(MAX_WAIT);
-						retry = true;
-						retryCount = 0;
-					}
-				 }
-				 retryCount++;
+				  }
+				  else if (response.getStatusLine().getStatusCode() == THROTTLING_STATUS_CODE) {
+					     if (retryCount <= MAX_RETRY) {
+						    retry = true;
+					      } else {
+						     // Since maximum throttling window is 60 secs, program waits for 60 secs before making future calls.
+						     Thread.sleep(MAX_WAIT);
+						     retry = true;
+					         retryCount = 0;
+					       }
+				   }
+				  retryCount++;
 			   } while (retry);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,7 +106,6 @@ public class APIThrottlingSample {
 	 * Returns the next wait interval, in milliseconds
 	 */
 	public static long getWaitTime(int retryCount) {
-
 	    long waitTime = ((long) Math.pow(retryCount, 2) * 1000L);
 	    return waitTime;
 	}
