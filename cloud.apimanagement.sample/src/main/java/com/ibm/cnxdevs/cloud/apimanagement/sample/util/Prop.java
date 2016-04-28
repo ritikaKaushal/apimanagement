@@ -7,5 +7,6 @@ public class Prop {
 	public static String appkey = "enter your appkey here";
 	
 	public static String serverUrl = "https://apps.na.collabserv.com";
-
+	public static String apiUrl = "/activities/service/atom2/everything";
+	
 }
